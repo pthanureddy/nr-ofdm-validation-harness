@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nr-ofdm-validation-harness"
+version = "0.1.0"
+description = "NR-inspired OFDM validation harness with pilot-based channel estimation"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Thanu Reddy Pathipati" }]
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+nr-ofdm-validate = "nr_validation.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["nr_validation*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
