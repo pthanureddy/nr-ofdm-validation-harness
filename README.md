@@ -48,6 +48,9 @@ against the Python reference for three noiseless flat-channel configurations.
 Install the Python package with `python -m pip install -e ".[dev]"` first.
 The iterative C++ FFT uses standard-library complex numbers and is an
 executable reference, not a performance-optimized modem.
+The [AI-assisted engineering review](docs/ai-assisted-engineering-review.md)
+records the manual checks, verification gates, and remaining limits for the
+C++ extension.
 
 Run a nominal frame and print JSON metrics:
 
