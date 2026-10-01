@@ -12,6 +12,8 @@ The project is intentionally scoped as an engineering validation harness rather 
 - Deterministic noise injection for reproducible failure analysis.
 - EVM and BER measurements with requirements-based pass/fail decisions.
 - A machine-readable CLI report suitable for CI artifacts or a larger test system.
+- A C++20 radix-2 FFT/QPSK/cyclic-prefix/pilot-estimation reference path with
+  CTest component checks and parity checks against the Python implementation.
 
 ## Requirements traceability
 
@@ -32,6 +34,20 @@ On macOS or Linux, activate with `source .venv/bin/activate`.
 ```powershell
 python -m pytest
 ```
+
+Build and verify the C++ reference path with a C++20 compiler and CMake 3.20+:
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+ctest --test-dir build -C Release --output-on-failure
+```
+
+`ctest` runs native component checks and compares the C++ frame executable
+against the Python reference for three noiseless flat-channel configurations.
+Install the Python package with `python -m pip install -e ".[dev]"` first.
+The iterative C++ FFT uses standard-library complex numbers and is an
+executable reference, not a performance-optimized modem.
 
 Run a nominal frame and print JSON metrics:
 
@@ -72,7 +88,9 @@ nr_validation/
   validation.py   requirements-based scenario evaluation
 tests/            pytest unit and integration checks
 docs/requirements.md  requirement-to-test traceability
-.github/workflows/ci.yml  repeatable Python CI
+.github/workflows/ci.yml  Python and C++ CI
+cpp/              C++20 reference implementation, CLI, and tests
+CMakeLists.txt     C++ build and CTest configuration
 ```
 
 ## Limitations and trade-offs
@@ -81,3 +99,6 @@ docs/requirements.md  requirement-to-test traceability
 - The implementation uses a small grid and QPSK only; it does not implement the full NR physical layer.
 - Noise is deterministic when a seed is supplied so failures can be reproduced.
 - NumPy is used for clarity and reference behavior; this is not an optimized real-time implementation.
+- The C++ reference covers a fixed 64-subcarrier, 16-sample cyclic-prefix,
+  QPSK frame over a noiseless flat complex channel. No throughput or latency
+  target has been measured, and this is not a 3GPP-compliant Layer 1 stack.

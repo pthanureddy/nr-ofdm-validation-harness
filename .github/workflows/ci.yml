@@ -19,3 +19,34 @@ jobs:
       - name: Run validation suite
         run: python -m nr_validation.cli --scenario suite
 
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            compiler: gcc
+          - os: ubuntu-latest
+            compiler: clang
+          - os: windows-latest
+            compiler: msvc
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Python reference dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Configure C++ reference
+        shell: bash
+        run: |
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            export CC=clang CXX=clang++
+          fi
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build C++ reference
+        run: cmake --build build --config Release --parallel
+      - name: Component and Python parity checks
+        run: ctest --test-dir build -C Release --output-on-failure
+

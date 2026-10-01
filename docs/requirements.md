@@ -8,6 +8,8 @@
 | NR-OFDM-004 | The nominal scenario shall meet the configured BER and EVM limits. | `tests/test_validation.py::test_nominal_scenario_passes` |
 | NR-OFDM-005 | A deliberately noisy scenario shall be reported as a validation failure rather than being silently accepted. | `tests/test_validation.py::test_noisy_scenario_is_rejected` |
 | NR-OFDM-006 | The complete validation suite shall return a structured summary with all requirements passing. | `tests/test_validation.py::test_validation_suite_summary` |
+| NR-OFDM-007 | The C++20 reference shall recover a noiseless 64-subcarrier QPSK frame after cyclic-prefix and flat-channel processing. | `cpp/tests/test_ofdm.cpp::test_frame_channel_estimate` |
+| NR-OFDM-008 | C++20 and Python reference paths shall agree on bit count, BER, pilot estimate, and EVM for three noiseless flat-channel cases. | `cpp/tests/test_python_parity.py` via CTest |
 
 The requirements use a simplified flat-channel model and are not claims about 3GPP conformance. They define the behavior that this repository actually implements.
 
