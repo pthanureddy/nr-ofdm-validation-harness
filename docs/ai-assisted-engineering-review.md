@@ -19,6 +19,11 @@ reference and its documented 64-subcarrier flat-channel scope.
 5. Ran the existing Python unit tests and added C++ component checks plus three
    cross-language noiseless frame comparisons. GitHub CI compiles with GCC,
    Clang, and MSVC and runs those checks on Linux and Windows.
+6. For the later C11 Q15 extension, checked the largest complex-product and
+   64-tap FIR sums against the 64-bit accumulator range. Added exact-value,
+   rounding, saturation, and invalid-argument checks. Kept these kernels
+   separate from the OFDM frame because integration would need an independent
+   quantized-frame reference and error-budget tests.
 
 The parity check compares bit count, bit errors, BER, pilot gain estimate, and
 EVM. It uses three flat complex channel gains and zero noise. This is a

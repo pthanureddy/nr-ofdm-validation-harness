@@ -14,6 +14,8 @@ The project is intentionally scoped as an engineering validation harness rather 
 - A machine-readable CLI report suitable for CI artifacts or a larger test system.
 - A C++20 radix-2 FFT/QPSK/cyclic-prefix/pilot-estimation reference path with
   CTest component checks and parity checks against the Python implementation.
+- Caller-buffer C11 Q15 complex multiplication and real-tap IQ FIR kernels,
+  with explicit rounding, saturation, and boundary checks.
 
 ## Requirements traceability
 
@@ -35,7 +37,8 @@ On macOS or Linux, activate with `source .venv/bin/activate`.
 python -m pytest
 ```
 
-Build and verify the C++ reference path with a C++20 compiler and CMake 3.20+:
+Build and verify the C++ reference path and C11 kernels with C/C++ compilers
+and CMake 3.20+:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -43,14 +46,15 @@ cmake --build build --config Release
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-`ctest` runs native component checks and compares the C++ frame executable
+`ctest` runs native C/C++ component checks and compares the C++ frame executable
 against the Python reference for three noiseless flat-channel configurations.
 Install the Python package with `python -m pip install -e ".[dev]"` first.
 The iterative C++ FFT uses standard-library complex numbers and is an
 executable reference, not a performance-optimized modem.
 The [AI-assisted engineering review](docs/ai-assisted-engineering-review.md)
 records the manual checks, verification gates, and remaining limits for the
-C++ extension.
+C++ and C extensions. The [fixed-point kernel notes](docs/fixed-point-kernels.md)
+define Q15 arithmetic, FIR boundary behavior, and implementation limits.
 
 Run a nominal frame and print JSON metrics:
 
@@ -93,6 +97,7 @@ tests/            pytest unit and integration checks
 docs/requirements.md  requirement-to-test traceability
 .github/workflows/ci.yml  Python and C++ CI
 cpp/              C++20 reference implementation, CLI, and tests
+c/                C11 caller-buffer Q15 IQ kernels and tests
 CMakeLists.txt     C++ build and CTest configuration
 ```
 
@@ -105,3 +110,5 @@ CMakeLists.txt     C++ build and CTest configuration
 - The C++ reference covers a fixed 64-subcarrier, 16-sample cyclic-prefix,
   QPSK frame over a noiseless flat complex channel. No throughput or latency
   target has been measured, and this is not a 3GPP-compliant Layer 1 stack.
+- The Q15 kernels are separate building blocks; they are not wired into the
+  OFDM frame, SIMD-optimized, benchmarked, or deployed on a DSP.

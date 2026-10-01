@@ -10,6 +10,8 @@
 | NR-OFDM-006 | The complete validation suite shall return a structured summary with all requirements passing. | `tests/test_validation.py::test_validation_suite_summary` |
 | NR-OFDM-007 | The C++20 reference shall recover a noiseless 64-subcarrier QPSK frame after cyclic-prefix and flat-channel processing. | `cpp/tests/test_ofdm.cpp::test_frame_channel_estimate` |
 | NR-OFDM-008 | C++20 and Python reference paths shall agree on bit count, BER, pilot estimate, and EVM for three noiseless flat-channel cases. | `cpp/tests/test_python_parity.py` via CTest |
+| NR-OFDM-009 | C11 complex Q15 multiplication shall round half away from zero and saturate results to signed 16-bit range. | `c/tests/test_q15.c::test_complex_multiply`, `test_rounding_and_invalid_input` |
+| NR-OFDM-010 | C11 zero-history IQ FIR shall use caller buffers, reject invalid arguments, and saturate both components. | `c/tests/test_q15.c::test_fir`, `test_fir_saturation_and_validation` |
 
 The requirements use a simplified flat-channel model and are not claims about 3GPP conformance. They define the behavior that this repository actually implements.
 
